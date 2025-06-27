@@ -1,26 +1,21 @@
-chrome.runtime.onInstalled.addListener(() => {
+function createContextMenu() {
     chrome.contextMenus.create({
         id: "explainThat",
         title: "ExplainThat!",
         contexts: ["selection"]
     });
-    
-})
+}
 
-chrome.runtime.onStartup.addListener(() => {
-  chrome.contextMenus.create({
-    id: "explainThat",
-    title: "Explain That",
-    contexts: ["selection"]
-  });
-});
-
-chrome.contextMenus.onClicked.addListener(contextChecker)
+chrome.contextMenus.onClicked.addListener(contextChecker);
+chrome.runtime.onStartup.addListener(createContextMenu);
+chrome.runtime.onInstalled.addListener(createContextMenu);
 
 function contextChecker(inf, tab) {
     console.log(inf);
     if (inf["menuItemId"] === "explainThat") {
-        var data;
+        chrome.tabs.sendMessage(tab.id, {
+            action: "ExplainThat_initWindowFrame"
+        });
         fetch("https://ai.hackclub.com/chat/completions", {
             method: "POST",
             cache: "no-cache",
@@ -28,13 +23,15 @@ function contextChecker(inf, tab) {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                "messages": [{"role": "user", "content": "[In Language: English (United Kingdom)] Please explain this thoroughly in 1-2 sentences only: " + inf["selectionText"]}]
+                "messages": [{"role": "user", "content": "[ONLY In Language: English (United Kingdom)] Please explain this thoroughly in 1-2 sentences, only the explanation: " + inf["selectionText"]}]
             })
         })
         .then(response => response.json())
         .then(data => {
-            /* console.log(data); */
-            console.log(data["choices"][0]["message"]["content"]);
+            chrome.tabs.sendMessage(tab.id, {
+                action: "ExplainThat_sendResponseText",
+                responseText: data["choices"][0]["message"]["content"]
+            });
         });
     }
 }

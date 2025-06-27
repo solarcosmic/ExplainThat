@@ -1,10 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
         .container {
             width: 400px;
@@ -40,14 +33,3 @@
             0% { opacity: 1; }
             100% { opacity: 0; }
         }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <p id="explainthat-response-text">A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A<br><br>Lorem Ipsum is a placeholder text used in the printing and typesetting industry, having been standard dummy text since the 1500s. It has remained relatively unchanged, being popularised through Letraset sheets and desktop publishing software.<br><br>Bukkit color codes and format codes allow users to customize the appearance of text in their Minecraft server, such as chat messages and welcome messages, by using specific codes to change the text's color and style. These codes can be referenced from a list to apply various formats like bold, italic, or different colors.</p>
-        <div id="lower-bar">
-            <p>May include mistakes.</p>
-        </div>
-    </div>
-</body>
-</html>
