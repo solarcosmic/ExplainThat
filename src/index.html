@@ -8,7 +8,12 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
         .container {
             width: 400px;
-            background-color: #111111;
+            background: rgba(0, 0, 0, 0.32);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(0, 0, 0, 0.3);
             color: #ffffff;
             border-radius: 16px;
             position: absolute;
@@ -22,7 +27,8 @@
             width: 87%;
         }
         #lower-bar {
-            background-color: #181818;
+            display: flex;
+            background-color: #1818188a;
             bottom: 0;
             padding-top: 1px;
             padding-bottom: 1px;
@@ -30,7 +36,7 @@
             font-size: 12px;
             border-bottom-right-radius: 16px;
             border-bottom-left-radius: 16px;
-            color: grey;
+            color: #ffffff;
         }
         @keyframes fadeIn {
             0% { opacity: 0; }
@@ -40,6 +46,26 @@
             0% { opacity: 1; }
             100% { opacity: 0; }
         }
+        #themes {
+            font-family: "Inter", sans-serif;
+            margin-left: auto;
+            margin-right: 15px;
+            height: 30px;
+            align-self: center;
+            background-color: #29292931;
+            color: #ffffff;
+            border-style: none;
+            border-radius: 8px;
+            cursor: pointer;
+            outline: none;
+        }
+        #themes:hover {
+            background-color: #29292965;
+        }
+        #themes * {
+            background-color: #292929c5;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -47,6 +73,10 @@
         <p id="explainthat-response-text">A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A A<br><br>Lorem Ipsum is a placeholder text used in the printing and typesetting industry, having been standard dummy text since the 1500s. It has remained relatively unchanged, being popularised through Letraset sheets and desktop publishing software.<br><br>Bukkit color codes and format codes allow users to customize the appearance of text in their Minecraft server, such as chat messages and welcome messages, by using specific codes to change the text's color and style. These codes can be referenced from a list to apply various formats like bold, italic, or different colors.</p>
         <div id="lower-bar">
             <p>May include mistakes.</p>
+            <select id="themes">
+                <option value="default">Default</option>
+                <option value="liquid-glass">Liquid Glass</option>
+            </select>
         </div>
     </div>
 </body>

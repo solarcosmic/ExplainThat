@@ -4,6 +4,11 @@ function createContextMenu() {
         title: "ExplainThat!",
         contexts: ["selection"]
     });
+    chrome.contextMenus.create({
+        id: "explainThatPage",
+        title: "ExplainThat! Page",
+        contexts: ["page"]
+    });
 }
 
 chrome.contextMenus.onClicked.addListener(contextChecker);
@@ -12,7 +17,7 @@ chrome.runtime.onInstalled.addListener(createContextMenu);
 
 function contextChecker(inf, tab) {
     console.log(inf);
-    if (inf["menuItemId"] === "explainThat") {
+    if (inf["menuItemId"] == "explainThat") {
         chrome.tabs.sendMessage(tab.id, {
             action: "ExplainThat_initWindowFrame"
         });
@@ -32,6 +37,39 @@ function contextChecker(inf, tab) {
                 action: "ExplainThat_sendResponseText",
                 responseText: data["choices"][0]["message"]["content"]
             });
+        });
+    } else if (inf["menuItemId"] == "explainThatPage") {
+        chrome.tabs.sendMessage(tab.id, {
+            action: "ExplainThat_initWindowFrame",
+            preset_text: "Reading page..."
+        });
+        chrome.tabs.sendMessage(tab.id, {
+            action: "ExplainThat_readPageContent"
+        });
+        chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
+            if (req.action == "readPageComplete") {
+                chrome.tabs.sendMessage(tab.id, {
+                    action: "ExplainThat_changeText",
+                    text: "Thinking..."
+                });
+                fetch("https://ai.hackclub.com/chat/completions", {
+                    method: "POST",
+                    cache: "no-cache",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        "messages": [{"role": "user", "content": "[ONLY In Language: English (United Kingdom)] Please explain this thoroughly in 1-2 sentences, only the explanation: " + req["innerText"]}]
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    chrome.tabs.sendMessage(tab.id, {
+                        action: "ExplainThat_sendResponseText",
+                        responseText: data["choices"][0]["message"]["content"]
+                    });
+                });
+            }
         });
     }
 }
