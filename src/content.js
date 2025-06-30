@@ -2,9 +2,11 @@ var mouse_x;
 var mouse_y;
 
 var response_text;
-function doStuff(preset_text) {
+function doStuff(preset_text, disclaimer_text) {
     const container = document.createElement("div");
     const shadow = container.attachShadow({ mode: "open" });
+    const wrapdiv = document.createElement("div");
+    wrapdiv.style = "display: flex; margin-left: auto; align-items: center;";
 
     response_text = document.createElement("p");
     const lower_bar = document.createElement("div");
@@ -14,10 +16,24 @@ function doStuff(preset_text) {
     response_text.setAttribute("id", "explainthat-response-text");
     lower_bar.setAttribute("id", "lower-bar");
 
-    lower_bar_text.textContent = "May include mistakes.";
+    lower_bar_text.textContent = disclaimer_text || "May include mistakes.";
     response_text.textContent = preset_text || "Thinking...";
 
-    // theme options
+    // Copy button
+    const copy_button = document.createElement("input");
+    copy_button.setAttribute("type", "image");
+    copy_button.setAttribute("id", "copy-button");
+    copy_button.setAttribute("src", chrome.runtime.getURL("src/copy-solid.svg"));
+
+    copy_button.addEventListener("click", (e) => {
+        navigator.clipboard.writeText(response_text.textContent);
+        copy_button.setAttribute("src", chrome.runtime.getURL("src/check-solid.svg"));
+        setTimeout(() => {
+            copy_button.setAttribute("src", chrome.runtime.getURL("src/copy-solid.svg"));
+        }, "1000");
+    });
+
+    // Theme options
     select_themes.setAttribute("id", "themes");
     const select_default = document.createElement("option");
     const select_liquid_glass = document.createElement("option");
@@ -28,10 +44,15 @@ function doStuff(preset_text) {
     select_themes.appendChild(select_default);
     select_themes.appendChild(select_liquid_glass);
 
+    // Append copy button and theme selector to wrapdiv
+    wrapdiv.appendChild(copy_button);
+    wrapdiv.appendChild(select_themes);
+
     container.classList.add("container");
 
+    // Lower bar: disclaimer text, then wrapdiv (copy + themes)
     lower_bar.appendChild(lower_bar_text);
-    lower_bar.appendChild(select_themes);
+    lower_bar.appendChild(wrapdiv);
 
     const wrapper = document.createElement("div");
     wrapper.classList.add("container");
@@ -91,7 +112,7 @@ document.addEventListener("contextmenu", function(e) {
 })
 chrome.runtime.onMessage.addListener((req, sender, sendResponse) => {
     if (req.action == "ExplainThat_initWindowFrame") {
-        doStuff(req["preset_text"]);
+        doStuff(req["preset_text"], req["disclaimer_text"]);
     }
     if (req.action == "ExplainThat_sendResponseText") {
         setText(req["responseText"]);
@@ -172,6 +193,22 @@ function applyTheme(theme) {
             background-color: #292929c5;
             cursor: pointer;
         }
+        #explainthat-response-text p {
+            margin: 0;
+            padding: 0;
+        }
+        #copy-button {
+            margin-left: 0;
+            margin-right: 10px;
+            width: 16px;
+            height: 16px;
+            align-self: center;
+            opacity: 0.5;
+            filter: invert(51%) sepia(0%) saturate(1062%) hue-rotate(168deg) brightness(99%) contrast(89%);
+        }
+        #copy-button:hover {
+            filter: invert(100%) sepia(0%) saturate(7426%) hue-rotate(359deg) brightness(93%) contrast(73%);
+        }
         `
     } else if (theme == "Default") {
         return `
@@ -230,6 +267,22 @@ function applyTheme(theme) {
         #themes * {
             background-color: #292929c5;
             cursor: pointer;
+        }
+        #explainthat-response-text p {
+            margin: 0;
+            padding: 0;
+        }
+        #copy-button {
+            margin-left: 0;
+            margin-right: 10px;
+            width: 16px;
+            height: 16px;
+            align-self: center;
+            opacity: 0.5;
+            filter: invert(51%) sepia(0%) saturate(1062%) hue-rotate(168deg) brightness(99%) contrast(89%);
+        }
+        #copy-button:hover {
+            filter: invert(100%) sepia(0%) saturate(7426%) hue-rotate(359deg) brightness(93%) contrast(73%);
         }
         `
     }

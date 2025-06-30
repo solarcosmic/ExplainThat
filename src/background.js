@@ -41,7 +41,8 @@ function contextChecker(inf, tab) {
     } else if (inf["menuItemId"] == "explainThatPage") {
         chrome.tabs.sendMessage(tab.id, {
             action: "ExplainThat_initWindowFrame",
-            preset_text: "Reading page..."
+            preset_text: "Reading page...",
+            disclaimer_text: "Page generation is experimental."
         });
         chrome.tabs.sendMessage(tab.id, {
             action: "ExplainThat_readPageContent"
