@@ -5,6 +5,24 @@ var response_text;
 function doStuff(preset_text, disclaimer_text) {
     const container = document.createElement("div");
     const shadow = container.attachShadow({ mode: "open" });
+    const globalStyle = document.createElement('style');
+    globalStyle.textContent = `
+    @font-face {
+        font-family: "Inter_ExplainThat";
+        src: url("${chrome.runtime.getURL("src/assets/fonts/Inter.ttf")}") format("truetype");
+        font-display: swap;
+    }
+    `;
+    document.head.appendChild(globalStyle);
+
+    const style = document.createElement("style");
+    chrome.storage.sync.get("currentTheme", function(data) {
+        style.textContent = applyTheme(data["currentTheme"] || "Default");
+        select_themes.value = data["currentTheme"];
+    });
+
+    shadow.appendChild(style);
+
     const wrapdiv = document.createElement("div");
     wrapdiv.style = "display: flex; margin-left: auto; align-items: center;";
 
@@ -23,13 +41,13 @@ function doStuff(preset_text, disclaimer_text) {
     const copy_button = document.createElement("input");
     copy_button.setAttribute("type", "image");
     copy_button.setAttribute("id", "copy-button");
-    copy_button.setAttribute("src", chrome.runtime.getURL("src/copy-solid.svg"));
+    copy_button.setAttribute("src", chrome.runtime.getURL("src/assets/icons/copy-solid.svg"));
 
     copy_button.addEventListener("click", (e) => {
         navigator.clipboard.writeText(response_text.textContent);
-        copy_button.setAttribute("src", chrome.runtime.getURL("src/check-solid.svg"));
+        copy_button.setAttribute("src", chrome.runtime.getURL("src/assets/icons/check-solid.svg"));
         setTimeout(() => {
-            copy_button.setAttribute("src", chrome.runtime.getURL("src/copy-solid.svg"));
+            copy_button.setAttribute("src", chrome.runtime.getURL("src/assets/icons/copy-solid.svg"));
         }, "1000");
     });
 
@@ -59,13 +77,6 @@ function doStuff(preset_text, disclaimer_text) {
     wrapper.appendChild(response_text);
     wrapper.appendChild(lower_bar);
 
-    const style = document.createElement("style");
-    chrome.storage.sync.get("currentTheme", function(data) {
-        style.textContent = applyTheme(data["currentTheme"] || "Default");
-        select_themes.value = data["currentTheme"];
-    });
-
-    shadow.appendChild(style);
     shadow.appendChild(wrapper);
 
     container.style.position = "absolute";
@@ -132,7 +143,6 @@ function applyTheme(theme) {
     chrome.storage.sync.set({"currentTheme": theme});
     if (theme == "Liquid Glass") {
         return `
-        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
         .container {
             width: 400px;
             background: rgba(0, 0, 0, 0.7);
@@ -145,7 +155,7 @@ function applyTheme(theme) {
             border-radius: 16px;
             position: absolute;
             z-index: 9999;
-            font-family: "Inter", sans-serif;
+            font-family: "Inter_ExplainThat", sans-serif;
         }
         #explainthat-response-text {
             font-size: 15px;
@@ -174,7 +184,7 @@ function applyTheme(theme) {
             100% { opacity: 0; }
         }
         #themes {
-            font-family: "Inter", sans-serif;
+            font-family: "Inter_ExplainThat", sans-serif;
             margin-left: auto;
             margin-right: 15px;
             height: 30px;
@@ -212,7 +222,6 @@ function applyTheme(theme) {
         `
     } else if (theme == "Default") {
         return `
-        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
         .container {
             width: 400px;
             background-color: #111111;
@@ -220,7 +229,7 @@ function applyTheme(theme) {
             border-radius: 16px;
             position: absolute;
             z-index: 9999;
-            font-family: "Inter", sans-serif;
+            font-family: "Inter_ExplainThat", sans-serif;
         }
         #explainthat-response-text {
             font-size: 15px;
@@ -249,7 +258,7 @@ function applyTheme(theme) {
             100% { opacity: 0; }
         }
         #themes {
-            font-family: "Inter", sans-serif;
+            font-family: "Inter_ExplainThat", sans-serif;
             margin-left: auto;
             margin-right: 15px;
             height: 30px;
