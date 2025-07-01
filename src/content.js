@@ -17,8 +17,13 @@ function doStuff(preset_text, disclaimer_text) {
 
     const style = document.createElement("style");
     chrome.storage.sync.get("currentTheme", function(data) {
-        style.textContent = applyTheme(data["currentTheme"] || "Default");
-        select_themes.value = data["currentTheme"];
+        const savedTheme = data["currentTheme"];
+        style.textContent = applyTheme(savedTheme || "Default");
+        if (savedTheme) {
+            select_themes.value = savedTheme;
+        } else {
+            select_themes.value = "Default";
+        }
     });
 
     shadow.appendChild(style);
@@ -37,7 +42,7 @@ function doStuff(preset_text, disclaimer_text) {
     lower_bar_text.textContent = disclaimer_text || "May include mistakes.";
     response_text.textContent = preset_text || "Thinking...";
 
-    // Copy button
+    // copy button
     const copy_button = document.createElement("input");
     copy_button.setAttribute("type", "image");
     copy_button.setAttribute("id", "copy-button");
@@ -51,7 +56,7 @@ function doStuff(preset_text, disclaimer_text) {
         }, "1000");
     });
 
-    // Theme options
+    // theme options
     select_themes.setAttribute("id", "themes");
     const select_default = document.createElement("option");
     const select_liquid_glass = document.createElement("option");
@@ -62,13 +67,13 @@ function doStuff(preset_text, disclaimer_text) {
     select_themes.appendChild(select_default);
     select_themes.appendChild(select_liquid_glass);
 
-    // Append copy button and theme selector to wrapdiv
+    // append copy button and theme selector to wrapdiv
     wrapdiv.appendChild(copy_button);
     wrapdiv.appendChild(select_themes);
 
     container.classList.add("container");
 
-    // Lower bar: disclaimer text, then wrapdiv (copy + themes)
+    // lower bar: disclaimer text, then wrapdiv (copy + themes)
     lower_bar.appendChild(lower_bar_text);
     lower_bar.appendChild(wrapdiv);
 
