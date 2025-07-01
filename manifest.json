@@ -4,6 +4,11 @@
   "version": "1.0.0",
   "description": "Select any text on a webpage and have AI explain it for you.",
   "permissions": ["contextMenus", "storage"],
+  "icons": {
+    "16": "src/assets/icon_16.png",
+    "48": "src/assets/icon_48.png",
+    "128": "src/assets/icon_128.png"
+  },
   "background": {
     "service_worker": "src/background.js"
   },
